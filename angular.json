@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "Image-Viewer"
+    }
+  },
+  "defaultProject": "Image-Viewer",
+  "cli": {
+    "analytics": "af368c66-2b42-4d9d-97d1-01e24d95ed24"
+  }
 }
