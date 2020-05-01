@@ -2,6 +2,7 @@ import { NavigationService } from './../service/navigation.service';
 import { Component, OnInit, ViewChild, ElementRef, Input, HostListener } from '@angular/core';
 const create360Viewer = require('360-image-viewer');
 const canvasFit = require('canvas-fit');
+const controls = require('orbit-controls')
 
 @Component({
   selector: 'app-three-sixty',
@@ -11,6 +12,7 @@ const canvasFit = require('canvas-fit');
 export class ThreeSixtyComponent implements OnInit {
 
   private viewer: any;
+  private imagesObj: HTMLImageElement[] = [];
   constructor() { }
 
 
@@ -23,25 +25,24 @@ export class ThreeSixtyComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-      const image=new Image();
-      image.src='../../assets/2 .jpg';
-      image.onload = () => {
-
-      this.viewer.texture(image);
-
-      };
+    this.viewer.texture(this.imagesObj[1]);
   }
 
   ngOnInit(): void {
-    const image=new Image();
-    image.src='../../assets/1.jpg';
-    image.onload = () => {
+    var image1=new Image();
+    image1.src='../../assets/1.jpg';
+    image1.onload = () => {
 
     this. viewer = create360Viewer({
-        image,
-        canvas: this.canvas.nativeElement
+        image:image1,
+        canvas: this.canvas.nativeElement,
+        theta:30*Math.PI
     });
 
+    var image2=new Image();
+    image2.src='../../assets/2 .jpg';
+    this.imagesObj.push(image1);
+    this.imagesObj.push(image2);
     const fit = canvasFit(this.viewer.canvas, window, window.devicePixelRatio);
     window.addEventListener('resize', fit, false);
     fit();

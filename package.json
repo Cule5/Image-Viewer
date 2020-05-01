@@ -22,6 +22,7 @@
     "@angular/router": "~9.1.1",
     "@types/node": "^13.13.2",
     "canvas-fit": "^1.5.0",
+    "orbit-controls": "^1.2.4",
     "regl": "^1.4.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
