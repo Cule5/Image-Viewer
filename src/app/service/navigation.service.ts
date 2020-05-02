@@ -1,7 +1,6 @@
+import { element } from 'protractor';
+import { ExtendedImage } from './../model/extended-image';
 import { Injectable } from '@angular/core';
-import { ExtendedImage } from '../model/extended-image';
-// import { ExtendedImage } from '../model/extended-image';
-// import { Direction } from '../model/direction';
 const create360Viewer = require('360-image-viewer');
 const canvasFit = require('canvas-fit');
 
@@ -11,34 +10,53 @@ const canvasFit = require('canvas-fit');
 export class NavigationService {
   private isInveredNvigation = false;
   private isInitialized = false;
-  private images: ExtendedImage[]=[];
+  private images: Array<ExtendedImage> = new Array<ExtendedImage>();
+  private currentImage: ExtendedImage;
+
   private viewer: any;
   constructor() { }
 
-  initializeParameters(viewer:any,images:string[]):void{
-    if(this.isInitialized) {
+  public initialize(viewer: any, images: Array<ExtendedImage>): void{
+    if (this.isInitialized) {
       return;
     }
-    this.viewer=viewer;
+    this.viewer = viewer;
+    this.images = images;
 
+    const fit = canvasFit(viewer.canvas, window, window.devicePixelRatio);
+    window.addEventListener('resize', fit, false);
+    fit();
+    viewer.texture(images[0].image);
+    viewer.start();
+    this.currentImage=images[0];
 
   }
 
-  navigate(key: string): void{
-    switch(key){
-      case 'arrowup':
+  public navigate(key: string): void{
+    let newX = 0;
+    let newY = 0;
+    switch (key){
+      case 'ArrowUp':
+        newY = this.currentImage.y + 1;
         break;
-      case '':
+      case 'ArrowDown':
+        newY = this.currentImage.y - 1;
         break;
-      case '':
+      case 'ArrowLeft':
+        newX = this.currentImage.x - 1;
         break;
-      case '':
+      case 'arrowright':
+        newX = this.currentImage.x + 1;
         break;
-
-      default:
-
     }
 
-  }
+    const image = this.images.find((element) => {
+      return element.x === newX && element.y === newY;
+    });
 
+    if (image !== undefined){
+      this.viewer.texture(image.image);
+      this.currentImage = image;
+    }
+  }
 }

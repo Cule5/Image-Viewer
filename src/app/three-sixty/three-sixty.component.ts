@@ -1,8 +1,8 @@
+import { ExtendedImage } from './../model/extended-image';
 import { NavigationService } from './../service/navigation.service';
 import { Component, OnInit, ViewChild, ElementRef, Input, HostListener } from '@angular/core';
 const create360Viewer = require('360-image-viewer');
 const canvasFit = require('canvas-fit');
-const controls = require('orbit-controls')
 
 @Component({
   selector: 'app-three-sixty',
@@ -11,45 +11,26 @@ const controls = require('orbit-controls')
 })
 export class ThreeSixtyComponent implements OnInit {
 
-  private viewer: any;
-  private imagesObj: HTMLImageElement[] = [];
-  constructor() { }
-
-
-
   @ViewChild('canvasElement', { static: true })
-  canvas: ElementRef<HTMLCanvasElement>;
+  public canvas: ElementRef<HTMLCanvasElement>;
 
   @Input()
-  images: string[];
+  public images: Array<ExtendedImage> = new Array<ExtendedImage>();
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    this.viewer.texture(this.imagesObj[1]);
+    this.navigationService.navigate(event.key);
   }
 
-  ngOnInit(): void {
-    var image1=new Image();
-    image1.src='../../assets/1.jpg';
-    image1.onload = () => {
+  public constructor(private navigationService: NavigationService) { }
 
-    this. viewer = create360Viewer({
-        image:image1,
-        canvas: this.canvas.nativeElement,
-        theta:30*Math.PI
-    });
-
-    var image2=new Image();
-    image2.src='../../assets/2 .jpg';
-    this.imagesObj.push(image1);
-    this.imagesObj.push(image2);
-    const fit = canvasFit(this.viewer.canvas, window, window.devicePixelRatio);
-    window.addEventListener('resize', fit, false);
-    fit();
-    this.viewer.start();
-
+  public ngOnInit(): void {
+    this.images[0].image.onload = () => {
+      const viewer = create360Viewer({
+        canvas: this.canvas.nativeElement
+      });
+      this.navigationService.initialize(viewer, this.images);
     };
-
   }
 
 }
