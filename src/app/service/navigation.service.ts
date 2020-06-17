@@ -9,9 +9,11 @@ const canvasFit = require('canvas-fit');
 })
 export class NavigationService {
   private isInveredNvigation = false;
+  private factor:number;
   private isInitialized = false;
   private images: Array<ExtendedImage> = new Array<ExtendedImage>();
   private currentImage: ExtendedImage;
+  private prevImage:ExtendedImage;
 
   private viewer: any;
   constructor() { }
@@ -29,24 +31,56 @@ export class NavigationService {
     viewer.texture(images[0].image);
     viewer.start();
     this.currentImage=images[0];
-
+    this.prevImage=images[0];
   }
 
   public navigate(key: string): void{
-    let newX = 0;
-    let newY = 0;
+    let newX = this.currentImage.x;
+    let newY = this.currentImage.y;
+    let currentTheta=this.viewer.controls.theta - this.currentImage.angleShift;
+    
+    this.factor=1;
+    
     switch (key){
       case 'ArrowUp':
-        newY = this.currentImage.y + 1;
+        if(currentTheta<=0 && currentTheta > -0.7853981634 ){
+          newX = this.currentImage.x - 1*this.factor;
+        }
+        else if(currentTheta < -0.7853981634 && currentTheta > -2.3561944902 ){
+          newY = this.currentImage.y + 1*this.factor;
+        }
+        else if(currentTheta < -2.3561944902 && currentTheta > -3.1415926536){
+          newX = this.currentImage.x + 1*this.factor;
+        }
+        else if(currentTheta>=0 && currentTheta < 0.7853981634 ){
+          newX = this.currentImage.x - 1*this.factor;
+        }
+        else if(currentTheta>=0.7853981634 && currentTheta < 2.3561944902 ){
+          newY = this.currentImage.y - 1*this.factor;
+        }
+        else if(currentTheta>=2.3561944902 && currentTheta < 3.1415926536 ){
+          newX = this.currentImage.x + 1*this.factor;
+        }
         break;
       case 'ArrowDown':
-        newY = this.currentImage.y - 1;
-        break;
-      case 'ArrowLeft':
-        newX = this.currentImage.x - 1;
-        break;
-      case 'arrowright':
-        newX = this.currentImage.x + 1;
+        if(currentTheta<=0 && currentTheta > -0.7853981634 ){
+          newX = this.currentImage.x + 1*this.factor;
+        }
+        else if(currentTheta < -0.7853981634 && currentTheta > -2.3561944902 ){
+          newY = this.currentImage.y - 1*this.factor;
+        }
+        else if(currentTheta < -2.3561944902 && currentTheta > -3.1415926536){
+          newX = this.currentImage.x - 1*this.factor;
+        }
+        else if(currentTheta>=0 && currentTheta < 0.7853981634 ){
+          newX = this.currentImage.x + 1*this.factor;
+        }
+        else if(currentTheta>=0.7853981634 && currentTheta < 2.3561944902 ){
+          newY = this.currentImage.y + 1*this.factor;
+        }
+        else if(currentTheta>=2.3561944902 && currentTheta < 3.1415926536 ){
+          newX = this.currentImage.x - 1*this.factor;
+        }
         break;
     }
 
@@ -56,7 +90,13 @@ export class NavigationService {
 
     if (image !== undefined){
       this.viewer.texture(image.image);
+      this.prevImage=this.currentImage;
       this.currentImage = image;
+      if(this.prevImage.angleShift===0)
+        this.viewer.controls.theta+=this.currentImage.angleShift;
+      
+      if(this.currentImage.angleShift===0 && this.prevImage.angleShift!==0)
+      this.viewer.controls.theta-=this.prevImage.angleShift;
     }
   }
 }
