@@ -39,27 +39,31 @@ export class NavigationService {
     let newY = this.currentImage.y;
     let currentTheta=this.viewer.controls.theta - this.currentImage.angleShift;
     
-    this.factor=1;
-    
     switch (key){
       case 'ArrowUp':
         if(currentTheta<=0 && currentTheta > -0.7853981634 ){
-          newX = this.currentImage.x - 1*this.factor;
+          newX = this.currentImage.x - 1;
         }
         else if(currentTheta < -0.7853981634 && currentTheta > -2.3561944902 ){
-          newY = this.currentImage.y + 1*this.factor;
+          newY = this.currentImage.y + 1;
         }
         else if(currentTheta < -2.3561944902 && currentTheta > -3.1415926536){
-          newX = this.currentImage.x + 1*this.factor;
+          newX = this.currentImage.x + 1;
         }
         else if(currentTheta>=0 && currentTheta < 0.7853981634 ){
-          newX = this.currentImage.x - 1*this.factor;
+          newX = this.currentImage.x - 1;
         }
         else if(currentTheta>=0.7853981634 && currentTheta < 2.3561944902 ){
-          newY = this.currentImage.y - 1*this.factor;
+          newY = this.currentImage.y - 1;
         }
         else if(currentTheta>=2.3561944902 && currentTheta < 3.1415926536 ){
-          newX = this.currentImage.x + 1*this.factor;
+          newX = this.currentImage.x + 1;
+        }
+        else if(currentTheta >= 3.1415926536 && currentTheta < 3.926990817){
+          newX = this.currentImage.x +1;
+        }
+        else if(currentTheta <= -3.1415926536 && currentTheta > -3.926990817){
+          newX = this.currentImage.x +1;
         }
         break;
       case 'ArrowDown':
@@ -80,6 +84,12 @@ export class NavigationService {
         }
         else if(currentTheta>=2.3561944902 && currentTheta < 3.1415926536 ){
           newX = this.currentImage.x - 1*this.factor;
+        }
+        else if(currentTheta >= 3.1415926536 && currentTheta < 3.926990817){
+          newX = this.currentImage.x - 1;
+        }
+        else if(currentTheta <= -3.1415926536 && currentTheta > -3.926990817){
+          newX = this.currentImage.x - 1;
         }
         break;
     }
